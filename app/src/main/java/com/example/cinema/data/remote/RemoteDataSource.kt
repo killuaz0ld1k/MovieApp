@@ -1,0 +1,9 @@
+package com.example.cinema.data.remote
+
+import com.example.cinema.domain.model.Movie
+import com.example.cinema.domain.model.MovieDetails
+
+interface RemoteDataSource {
+    suspend fun loadMovies() : List<Movie>
+    suspend fun loadMovie(movieId : Int) : MovieDetails
+}
