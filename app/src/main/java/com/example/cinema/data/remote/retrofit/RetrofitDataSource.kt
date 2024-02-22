@@ -53,7 +53,6 @@ internal class RetrofitDataSource(private val moviesApi: MoviesApi, private val 
                     actorId = actor.id,
                     name = actor.name,
                     imageUrl = (if (imageUrlAppender.getActorImageUrl(actor.profile_path) != null) imageUrlAppender.getActorImageUrl(actor.profile_path) else "https://sopranoclub.ru/images/memy-na-avu-275-memnyh-avatarok/file56870.jpeg").toString()
-
                 )
             }
         )

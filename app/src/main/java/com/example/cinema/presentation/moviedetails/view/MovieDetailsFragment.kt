@@ -24,9 +24,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
- // надо понять что мне необходимо сделать и каким путём это реализовать
-
-    // нужно во view передать данные из MovieDetails
 
     private val detailViewModel : MovieDetailsViewModel by viewModels()
     private var toBackListener : BackToListMovies? = null
@@ -47,7 +44,8 @@ class MovieDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        val movieId = arguments?.getSerializable(MOVIE_ID) as? Int ?: return
+
+        val movieId = arguments?.getInt(MOVIE_ID) ?: return
 
         view.findViewById<RecyclerView>(R.id.recycler_movies).apply {
             this.layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
@@ -56,7 +54,8 @@ class MovieDetailsFragment : Fragment() {
 
         detailViewModel.loadMovieDetails(movieId)
         detailViewModel.movieDetailsList.observe(viewLifecycleOwner) {
-            bindUi(view, it)
+            loadDataToFragment(it)
+            loadDataToAdapter(view, it)
         }
         view.findViewById<View>(R.id.back_button_layout).setOnClickListener() {
             toBackListener?.clickBackButton()
@@ -68,15 +67,14 @@ class MovieDetailsFragment : Fragment() {
         super.onDetach()
     }
 
-    private fun bindUi(view : View, movieDetails : MovieDetails) {
+    private fun loadDataToAdapter(view : View, movieDetails : MovieDetails) {
 
-        loadDataToUi(movieDetails)
         val adapter = view.findViewById<RecyclerView>(R.id.recycler_movies).adapter as MovieDetailsAdapter
         adapter.submitList(movieDetails.actors)
 
     }
 
-    private fun loadDataToUi(movieDetails : MovieDetails) {
+    private fun loadDataToFragment(movieDetails : MovieDetails) {
 
         view?.findViewById<ImageView>(R.id.movie_logo_image)?.load(movieDetails.detailImageUrl)
 
@@ -106,7 +104,6 @@ class MovieDetailsFragment : Fragment() {
             }
         }
     }
-
     companion object {
         private const val MOVIE_ID = "movie_id"
         fun newInstance(movieId : Int) =

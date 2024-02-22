@@ -46,12 +46,10 @@ class MoviesViewHolder(itemView : View) : ViewHolder(itemView) {
     private val movieLike : ImageView = itemView.findViewById(R.id.movie_like_image)
     private val filmName : TextView = itemView.findViewById(R.id.film_name_text)
     private val runningTime : TextView = itemView.findViewById(R.id.film_time_text)
+
     fun bind(item : Movie, onClickItem : (movieId : Int) -> Unit) {
 
         movieImage.load(item.imageUrl)
-
-        val pinkColor = ContextCompat.getColor(itemView.context,R.color.pink_light)
-        val whiteColor = ContextCompat.getColor(itemView.context,R.color.white)
 
         starsImages.forEachIndexed { index, imageView ->
             val colorId = if (item.rating > index) R.color.pink_light else R.color.gray_dark
@@ -62,15 +60,17 @@ class MoviesViewHolder(itemView : View) : ViewHolder(itemView) {
             )
         }
 
-        if (item.isLiked) {
-            movieLike.setColorFilter(pinkColor)
-        }
-        else movieLike.setColorFilter(whiteColor)
-
-
         val context = itemView.context
 
-        pgAge.text = item.pgAge.toString() + "+"
+        var isLiked = item.isLiked
+        updateLikeColor(isLiked)
+
+        movieLike.setOnClickListener {
+            isLiked = !isLiked
+            updateLikeColor(isLiked)
+        }
+
+        pgAge.text = context.getString(R.string.movies_list_allowed_age_template,item.pgAge)
         genre.text = item.genres.joinToString { it.name }
         reviewCount.text =
             context.getString(R.string.movies_list_reviews_template, item.reviewCount)
@@ -80,6 +80,12 @@ class MoviesViewHolder(itemView : View) : ViewHolder(itemView) {
         itemView.setOnClickListener {
             onClickItem(item.id)
         }
+    }
+    private fun updateLikeColor(isLiked : Boolean) {
+        if (isLiked) {
+            movieLike.setColorFilter(ContextCompat.getColor(itemView.context,R.color.pink_light))
+        }
+        else movieLike.setColorFilter(ContextCompat.getColor(itemView.context,R.color.white))
     }
 
 }
