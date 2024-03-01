@@ -13,8 +13,3 @@ class MovieResponse(
     @SerialName("vote_count") val voteCount : Int,
     @SerialName("vote_average") val voteAverage : Double
 )
-{
-    override fun toString(): String {
-        return "MovieResponse(posterPath='$posterPath', adult=$adult, genreIds=$genreIds, id=$id, title='$title', voteCount=$voteCount, voteAverage=$voteAverage)"
-    }
-}

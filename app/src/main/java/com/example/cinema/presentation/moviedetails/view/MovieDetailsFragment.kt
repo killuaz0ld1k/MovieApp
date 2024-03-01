@@ -71,9 +71,7 @@ class MovieDetailsFragment : Fragment() {
 
         val adapter = view.findViewById<RecyclerView>(R.id.recycler_movies).adapter as MovieDetailsAdapter
         adapter.submitList(movieDetails.actors)
-
     }
-
     private fun loadDataToFragment(movieDetails : MovieDetails) {
 
         view?.findViewById<ImageView>(R.id.movie_logo_image)?.load(movieDetails.detailImageUrl)
@@ -91,7 +89,12 @@ class MovieDetailsFragment : Fragment() {
             view?.findViewById(R.id.star2_image),
             view?.findViewById(R.id.star3_image),
             view?.findViewById(R.id.star4_image),
-            view?.findViewById(R.id.star5_image)
+            view?.findViewById(R.id.star5_image),
+            view?.findViewById(R.id.star6_image),
+            view?.findViewById(R.id.star7_image),
+            view?.findViewById(R.id.star8_image),
+            view?.findViewById(R.id.star9_image),
+            view?.findViewById(R.id.star10_image)
         )
         starsImages.forEachIndexed { index, imageView ->
             imageView?.let {

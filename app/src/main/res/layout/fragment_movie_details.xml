@@ -183,6 +183,66 @@
             app:tint="@color/gray_dark"
             tools:ignore="ContentDescription" />
 
+        <ImageView
+            android:id="@+id/star6_image"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:padding="@dimen/spacing_0_5x"
+            android:src="@drawable/ic_star"
+            app:layout_constraintBottom_toBottomOf="@id/star1_image"
+            app:layout_constraintStart_toEndOf="@id/star5_image"
+            app:layout_constraintTop_toTopOf="@id/star1_image"
+            app:tint="@color/gray_dark"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/star7_image"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:padding="@dimen/spacing_0_5x"
+            android:src="@drawable/ic_star"
+            app:layout_constraintBottom_toBottomOf="@id/star1_image"
+            app:layout_constraintStart_toEndOf="@id/star6_image"
+            app:layout_constraintTop_toTopOf="@id/star1_image"
+            app:tint="@color/gray_dark"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/star8_image"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:padding="@dimen/spacing_0_5x"
+            android:src="@drawable/ic_star"
+            app:layout_constraintBottom_toBottomOf="@id/star1_image"
+            app:layout_constraintStart_toEndOf="@id/star7_image"
+            app:layout_constraintTop_toTopOf="@id/star1_image"
+            app:tint="@color/gray_dark"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/star9_image"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:padding="@dimen/spacing_0_5x"
+            android:src="@drawable/ic_star"
+            app:layout_constraintBottom_toBottomOf="@id/star1_image"
+            app:layout_constraintStart_toEndOf="@id/star8_image"
+            app:layout_constraintTop_toTopOf="@id/star1_image"
+            app:tint="@color/gray_dark"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/star10_image"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:padding="@dimen/spacing_0_5x"
+            android:src="@drawable/ic_star"
+            app:layout_constraintBottom_toBottomOf="@id/star1_image"
+            app:layout_constraintStart_toEndOf="@id/star9_image"
+            app:layout_constraintTop_toTopOf="@id/star1_image"
+            app:tint="@color/gray_dark"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/movie_reviews_count_text"
             android:layout_width="0dp"
@@ -194,7 +254,7 @@
             android:textSize="@dimen/text_size_sub_title"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/root_right_guideline"
-            app:layout_constraintStart_toEndOf="@id/star5_image"
+            app:layout_constraintStart_toEndOf="@id/star10_image"
             app:layout_constraintTop_toBottomOf="@id/movie_tags_text"
             android:text="125 reviews" />
 

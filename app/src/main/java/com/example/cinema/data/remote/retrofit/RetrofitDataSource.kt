@@ -16,7 +16,6 @@ internal class RetrofitDataSource(private val moviesApi: MoviesApi, private val 
         // TODO из ViewModel передать номер страницы
 
         return moviesApi.loadUpcoming(page = 1).results.map { movieResponse ->
-            println("Movie Response: $movieResponse")
             Movie(
                 id = movieResponse.id,
                 title = movieResponse.title,

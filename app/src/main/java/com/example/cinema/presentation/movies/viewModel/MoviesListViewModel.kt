@@ -13,7 +13,6 @@ import javax.inject.Inject
 
 class MoviesListViewModel @Inject constructor(private val repository: MovieRepository) : ViewModel() {
 
-
     val moviesList = MutableLiveData<List<Movie>>()
 
     fun loadMovies() {

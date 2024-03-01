@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 class ActorResponse (
     @SerialName("id") val id : Int,
     @SerialName("name") val name : String,
-    @SerialName("profile_path") val profile_path : String?)
+    @SerialName("profile_path") val profile_path : String? = null)
 
 /*
 val actorId : Int,

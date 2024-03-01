@@ -1,6 +1,10 @@
 package com.example.cinema.di.hilt
 
 import com.example.cinema.data.MovieRepositoryImpl
+import com.example.cinema.data.local.LocalDataSource
+import com.example.cinema.data.local.room.RoomDataBase
+import com.example.cinema.data.local.room.RoomDataSource
+import com.example.cinema.data.local.room.dao.MoviesDao
 import com.example.cinema.data.remote.RemoteDataSource
 import com.example.cinema.data.remote.retrofit.ImageUrlAppender
 import com.example.cinema.data.remote.retrofit.MoviesApi
@@ -26,7 +30,11 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideMovieRepository(remoteDataSource: RemoteDataSource) : MovieRepository {
-        return MovieRepositoryImpl(remoteDataSource)
+    fun provideLocalDataSource(roomDataBase: RoomDataBase) : LocalDataSource = RoomDataSource(roomDataBase.moviesDao())
+
+    @Provides
+    @Singleton
+    fun provideMovieRepository(remoteDataSource: RemoteDataSource,localDataSource: LocalDataSource) : MovieRepository {
+        return MovieRepositoryImpl(remoteDataSource,localDataSource)
     }
 }
