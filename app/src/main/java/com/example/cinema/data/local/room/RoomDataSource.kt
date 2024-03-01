@@ -46,9 +46,6 @@ class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource {
                 )
             }
         )
-        movieFromNetwork.forEach {
-            insertGenres(it.genres)
-        }
     }
 
     override suspend fun getMovie(movieId: Int): MovieDetails {
@@ -73,7 +70,6 @@ class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource {
             }
         )
     }
-    // не записывается из за recyclerView(нет каста)
     override fun insertMovieDetails(movieDetailsFromNetwork: MovieDetails) {
         val movieDetailsEntity = movieDetailsFromNetwork.let {
             MovieDetailsEntity(
@@ -88,31 +84,13 @@ class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource {
             )
         }
         moviesDao.insertMovieDetails(movieDetailsEntity)
-        insertGenres(movieDetailsFromNetwork.genres)
-        insertActors(movieDetailsFromNetwork.actors)
-    }
-
-    private fun insertGenres(genres : List<Genre>) {
-        moviesDao.insertGenres(
-            genres.map {
-                GenreEntity(
-                    genreId = it.id,
-                    name = it.name,
-                    childGenreId = it.id
-                )
-            }
-        )
-    }
-    private fun insertActors(actors : List<Actor>) {
-        moviesDao.insertActors(
-            actors.map {
-                ActorEntity(
-                    actorId = it.actorId,
-                    name = it.name,
-                    imageUrl = it.imageUrl,
-                    childActorId = it.actorId
-                )
-            }
-        )
+        movieDetailsFromNetwork.genres.forEach {
+            val genreEntity = GenreEntity(genreId = it.id, name = it.name, childGenreId = movieDetailsEntity.id)
+            moviesDao.insertGenres(genreEntity)
+        }
+        movieDetailsFromNetwork.actors.forEach { actor ->
+            val actorEntity = ActorEntity(actorId = actor.actorId, imageUrl = actor.imageUrl, name = actor.name, childActorId = movieDetailsEntity.id)
+            moviesDao.insertActors(actorEntity)
+        }
     }
 }

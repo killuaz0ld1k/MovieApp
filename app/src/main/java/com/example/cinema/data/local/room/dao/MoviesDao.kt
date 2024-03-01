@@ -24,10 +24,10 @@ interface MoviesDao {
     fun insertMovies(movies : List<MovieEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertGenres(genres: List<GenreEntity>)
+    fun insertGenres(genres: GenreEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertActors(actors: List<ActorEntity>)
+    fun insertActors(actors: ActorEntity)
 
     @Transaction
     @Query("SELECT * FROM ${MovieDetailsEntity.MOVIE_DETAILS_TABLE_NAME}")
