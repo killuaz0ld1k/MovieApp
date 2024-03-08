@@ -6,6 +6,6 @@ import androidx.room.Relation
 data class MovieWithGenres (
 
     @Embedded val movie: MovieEntity,
-    @Relation(parentColumn = "id", entityColumn = "childGenreId")
+    @Relation(parentColumn = "id", entityColumn = "parentId")
     val genres: List<GenreEntity>
 )

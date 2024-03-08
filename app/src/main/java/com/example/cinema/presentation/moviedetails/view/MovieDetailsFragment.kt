@@ -15,6 +15,7 @@ import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.load
 import com.example.cinema.R
 import com.example.cinema.domain.model.MovieDetails
@@ -47,6 +48,8 @@ class MovieDetailsFragment : Fragment() {
 
         val movieId = arguments?.getInt(MOVIE_ID) ?: return
 
+        val swipeRefreshLayout : SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout_movie_details)
+
         view.findViewById<RecyclerView>(R.id.recycler_movies).apply {
             this.layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
             this.adapter = MovieDetailsAdapter()
@@ -57,8 +60,14 @@ class MovieDetailsFragment : Fragment() {
             loadDataToFragment(it)
             loadDataToAdapter(view, it)
         }
+
         view.findViewById<View>(R.id.back_button_layout).setOnClickListener() {
             toBackListener?.clickBackButton()
+        }
+
+        swipeRefreshLayout.setOnRefreshListener {
+            detailViewModel.loadMovieDetails(movieId)
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
@@ -97,14 +106,12 @@ class MovieDetailsFragment : Fragment() {
             view?.findViewById(R.id.star10_image)
         )
         starsImages.forEachIndexed { index, imageView ->
-            imageView?.let {
-                val colorId = if (movieDetails.rating > index) R.color.pink_light else R.color.gray_dark
-                ImageViewCompat.setImageTintList(
-                    imageView, ColorStateList.valueOf(
-                        ContextCompat.getColor(imageView.context, colorId)
-                    )
+            val colorId = if (movieDetails.rating > index) R.color.pink_light else R.color.gray_dark
+            ImageViewCompat.setImageTintList(
+                imageView!!, ColorStateList.valueOf(
+                    ContextCompat.getColor(imageView.context, colorId)
                 )
-            }
+            )
         }
     }
     companion object {

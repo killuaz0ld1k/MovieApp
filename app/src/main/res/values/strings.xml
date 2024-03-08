@@ -17,4 +17,5 @@
     <string name="storyline_title">Storyline</string>
     <string name="cast_title">Cast</string>
     <string name="error_movie_not_found">Sorry! Something went wrong - we can not find this movie in the system.</string>
+    <string name="error_message">Возникла ошибка. Попробуйте повторить попытку позже</string>
 </resources>

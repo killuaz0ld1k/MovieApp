@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.cinema.data.local.room.entities.MovieEntity.Companion.MOVIE_TABLE_NAME
 
-@Entity(tableName = MOVIE_TABLE_NAME)
+@Entity(tableName = MOVIE_TABLE_NAME, primaryKeys = ["id"])
 data class MovieEntity (
-    @PrimaryKey val id: Int,
+    val id: Int,
     val pgAge: Int,
     val title: String,
     val runningTime: Int,

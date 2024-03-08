@@ -2,6 +2,7 @@ package com.example.cinema.di.hilt
 
 import com.example.cinema.data.remote.retrofit.MoviesApi
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.skydoves.retrofit.adapters.result.ResultCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -11,24 +11,17 @@ class MovieRepositoryImpl(private val remoteDataSource : RemoteDataSource,privat
 
     override suspend fun loadMovies(): List<Movie> {
 
-        val movieDb = localDataSource.getMovies()
-        if (movieDb.isEmpty()) {
-            val movieFromNetwork = remoteDataSource.loadMovies()
-            localDataSource.insertMovies(movieFromNetwork)
-            return movieFromNetwork
-        }
-        else return movieDb
+//        val movieDb = localDataSource.getMovies()
+//        if (movieDb.isEmpty()) {
+//            val movieFromNetwork = remoteDataSource.loadMovies()
+//            localDataSource.insertMovies(movieFromNetwork)
+//            return movieFromNetwork
+//        }
+//        else return movieDb
+        return remoteDataSource.loadMovies()
     }
 
     override suspend fun loadMovie(movieId: Int) : MovieDetails {
-        // val localMovie = localDataSource.getMovie(movieId)
-        val localMovie = null
-        return if (localMovie == null) {
-            val remoteMovie = remoteDataSource.loadMovie(movieId)
-            localDataSource.insertMovieDetails(remoteMovie)
-            remoteMovie
-        } else {
-            localDataSource.getMovie(movieId)
-        }
+        return remoteDataSource.loadMovie(movieId)
     }
 }

@@ -52,7 +52,7 @@ class MoviesViewHolder(itemView : View) : ViewHolder(itemView) {
         movieImage.load(item.imageUrl)
 
         starsImages.forEachIndexed { index, imageView ->
-            val colorId = if (item.rating > index) R.color.pink_light else R.color.gray_dark
+            val colorId = if (item.rating / 2 > index) R.color.pink_light else R.color.gray_dark
             ImageViewCompat.setImageTintList(
                 imageView, ColorStateList.valueOf(
                     ContextCompat.getColor(imageView.context, colorId)

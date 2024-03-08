@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "fdb21ecad374c8c1373eefdd499cb10f",
+    "identityHash": "1ab4cc5faf287500251a1a7b4bf353fe",
     "entities": [
       {
         "tableName": "genre_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`genreId` INTEGER NOT NULL, `name` TEXT NOT NULL, `childGenreId` INTEGER NOT NULL, PRIMARY KEY(`genreId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`genreId` INTEGER NOT NULL, `name` TEXT NOT NULL, `parentId` INTEGER NOT NULL, PRIMARY KEY(`genreId`))",
         "fields": [
           {
             "fieldPath": "genreId",
@@ -21,8 +21,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "childGenreId",
-            "columnName": "childGenreId",
+            "fieldPath": "parentId",
+            "columnName": "parentId",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -100,7 +100,7 @@
       },
       {
         "tableName": "actor_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`actorId` INTEGER NOT NULL, `imageUrl` TEXT NOT NULL, `name` TEXT, `childActorId` INTEGER NOT NULL, PRIMARY KEY(`actorId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`actorId` INTEGER NOT NULL, `imageUrl` TEXT NOT NULL, `name` TEXT, `parentId` INTEGER NOT NULL, PRIMARY KEY(`actorId`))",
         "fields": [
           {
             "fieldPath": "actorId",
@@ -121,8 +121,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "childActorId",
-            "columnName": "childActorId",
+            "fieldPath": "parentId",
+            "columnName": "parentId",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -138,11 +138,11 @@
       },
       {
         "tableName": "movie_details_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `pgAge` INTEGER NOT NULL, `title` TEXT NOT NULL, `reviewCount` INTEGER NOT NULL, `isLiked` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `detailImageUrl` TEXT, `storyLine` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`parentId` INTEGER NOT NULL, `pgAge` INTEGER NOT NULL, `title` TEXT NOT NULL, `reviewCount` INTEGER NOT NULL, `isLiked` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `detailImageUrl` TEXT, `storyLine` TEXT NOT NULL, PRIMARY KEY(`parentId`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "parentId",
+            "columnName": "parentId",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -192,7 +192,7 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "parentId"
           ]
         },
         "indices": [],
@@ -202,7 +202,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fdb21ecad374c8c1373eefdd499cb10f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1ab4cc5faf287500251a1a7b4bf353fe')"
     ]
   }
 }

@@ -12,8 +12,8 @@ class MovieDetailsResponse
     @SerialName("genres") val genres : List<GenreResponse>,
     @SerialName("id") val id : Int,
     @SerialName("overview") val overview : String,
-    @SerialName("popularity") val popularity : Double,
-    @SerialName("revenue") val revenue : Int,
+    @SerialName("vote_average") val popularity : Double,
+    @SerialName("vote_count") val revenue : Int,
     @SerialName("runtime") val runtime : Int?,
     @SerialName("title") val title : String
 )

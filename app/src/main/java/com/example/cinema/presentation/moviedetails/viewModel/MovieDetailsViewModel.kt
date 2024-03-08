@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cinema.domain.model.MovieDetails
 import com.example.cinema.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,7 +17,7 @@ class MovieDetailsViewModel @Inject constructor(private val movieRepository: Mov
     val movieDetailsList = MutableLiveData<MovieDetails>()
 
     fun loadMovieDetails(movieId : Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             movieDetailsList.postValue(movieRepository.loadMovie(movieId))
         }
     }

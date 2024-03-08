@@ -18,23 +18,15 @@ class MainActivity : AppCompatActivity(), ClickListener,BackToListMovies {
         setContentView(R.layout.activity_main)
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container_view,MoviesFragment()).commit()
     }
-
     private fun routeToMovieSelected(movieId: Int) {
         supportFragmentManager.beginTransaction().add(R.id.fragment_container_view,MovieDetailsFragment.newInstance(movieId)).addToBackStack("MovieDetails").commit()
     }
-
     override fun onClickItem(movieId: Int) {
         routeToMovieSelected(movieId)
     }
-
     override fun clickBackButton() {
         routeBack()
     }
-
-    private fun routeToMovieList() {
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container_view,MoviesFragment()).commit()
-    }
-
     private fun routeBack() {
         supportFragmentManager.popBackStack()
     }

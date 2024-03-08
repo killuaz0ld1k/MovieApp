@@ -1,16 +1,16 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "1f34c769333a029c9f26f93da3183e61",
+    "version": 5,
+    "identityHash": "9191a9cdc17b38cf5d4042fce62c482c",
     "entities": [
       {
         "tableName": "genre_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `parentId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`parentId`) REFERENCES `movies_table`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`genreId` INTEGER NOT NULL, `name` TEXT NOT NULL, `parentId` INTEGER NOT NULL, PRIMARY KEY(`genreId`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "genreId",
+            "columnName": "genreId",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -30,23 +30,11 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "genreId"
           ]
         },
         "indices": [],
-        "foreignKeys": [
-          {
-            "table": "movies_table",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "parentId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
+        "foreignKeys": []
       },
       {
         "tableName": "movies_table",
@@ -114,7 +102,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1f34c769333a029c9f26f93da3183e61')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9191a9cdc17b38cf5d4042fce62c482c')"
     ]
   }
 }

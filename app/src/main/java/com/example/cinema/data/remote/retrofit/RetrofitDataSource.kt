@@ -50,11 +50,11 @@ internal class RetrofitDataSource(private val moviesApi: MoviesApi, private val 
             actors = moviesApi.loadMovieCredits(movieId).cast.map { actor ->
                 Actor(
                     actorId = actor.id,
-                    name = actor.name,
-                    imageUrl = (if (imageUrlAppender.getActorImageUrl(actor.profile_path) != null) imageUrlAppender.getActorImageUrl(actor.profile_path) else "https://sopranoclub.ru/images/memy-na-avu-275-memnyh-avatarok/file56870.jpeg").toString()
+                    name = actor.name!!,
+                    imageUrl = imageUrlAppender.getActorImageUrl(actor.profile_path) ?: "https://sopranoclub.ru/images/memy-na-avu-275-memnyh-avatarok/file56870.jpeg"
+                    //(if (imageUrlAppender.getActorImageUrl(actor.profile_path) != null) imageUrlAppender.getActorImageUrl(actor.profile_path) else "https://sopranoclub.ru/images/memy-na-avu-275-memnyh-avatarok/file56870.jpeg").toString()
                 )
             }
         )
-
     }
 }
