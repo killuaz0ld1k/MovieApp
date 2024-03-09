@@ -9,7 +9,7 @@ import com.example.cinema.domain.repository.MovieRepository
 
 class MovieRepositoryImpl(private val remoteDataSource : RemoteDataSource,private val localDataSource: LocalDataSource) : MovieRepository {
 
-    override suspend fun loadMovies(): List<Movie> {
+    override suspend fun loadMovies(page : Int): List<Movie> {
 
 //        val movieDb = localDataSource.getMovies()
 //        if (movieDb.isEmpty()) {
@@ -18,7 +18,7 @@ class MovieRepositoryImpl(private val remoteDataSource : RemoteDataSource,privat
 //            return movieFromNetwork
 //        }
 //        else return movieDb
-        return remoteDataSource.loadMovies()
+        return remoteDataSource.loadMovies(page)
     }
 
     override suspend fun loadMovie(movieId: Int) : MovieDetails {

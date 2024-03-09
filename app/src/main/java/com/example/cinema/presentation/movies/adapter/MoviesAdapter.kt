@@ -17,16 +17,31 @@ import com.example.cinema.R
 import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Movie
 
-class MoviesAdapter(private val onClickItem : (movieId : Int) -> Unit) : ListAdapter<Movie,MoviesViewHolder>(MoviesDiffCallback()) {
+class MoviesAdapter(private val onClickItem : (movieId : Int) -> Unit) : Adapter<MoviesViewHolder>() {
+
+    private var movieList : MutableList<Movie> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
         return MoviesViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_movie,parent,false)
         )
     }
+
+    override fun getItemCount(): Int {
+        return movieList.size
+    }
+
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
-        val item = getItem(position)
+        val item = movieList[position]
         holder.bind(item,onClickItem)
+    }
+
+    fun addDataToAdapter(movies : List<Movie>) {
+        movieList.addAll(movies)
+    }
+    fun clearMovies() {
+        movieList.clear()
+        notifyDataSetChanged()
     }
 }
 
@@ -86,16 +101,5 @@ class MoviesViewHolder(itemView : View) : ViewHolder(itemView) {
             movieLike.setColorFilter(ContextCompat.getColor(itemView.context,R.color.pink_light))
         }
         else movieLike.setColorFilter(ContextCompat.getColor(itemView.context,R.color.white))
-    }
-
-}
-
-class MoviesDiffCallback : DiffUtil.ItemCallback<Movie>() {
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem == newItem
     }
 }

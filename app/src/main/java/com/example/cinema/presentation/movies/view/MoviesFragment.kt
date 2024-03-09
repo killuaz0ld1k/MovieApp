@@ -38,7 +38,7 @@ class MoviesFragment : Fragment() {
         val recycleMovies : RecyclerView = view.findViewById(R.id.recycler_movies)
 
         recycleMovies.apply {
-            this.setHasFixedSize(true)
+            // this.setHasFixedSize(true)
             this.layoutManager = GridLayoutManager(this.context,2)
             val adapter = MoviesAdapter {movieId ->
                 listener?.onClickItem(movieId)
@@ -46,10 +46,25 @@ class MoviesFragment : Fragment() {
             this.adapter = adapter
             loadDataToAdapter(adapter,view)
             swipeRefresh.setOnRefreshListener {
+                viewModel.currentPage = 1
+                adapter.clearMovies()
                 loadDataToAdapter(adapter,view)
                 swipeRefresh.isRefreshing = false
             }
         }
+        recycleMovies.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                if (!viewModel.isLoading && visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                    viewModel.loadMovies()
+                }
+            }
+        })
     }
     private fun loadDataToAdapter(adapter: MoviesAdapter, view : View) { // TODO() выяснить почему не обновляются данные после эрора
 
@@ -63,7 +78,9 @@ class MoviesFragment : Fragment() {
                     progressBar.visibility = View.VISIBLE
                 }
                 is State.Success -> {
-                    adapter.submitList(state.movies)
+                    adapter.addDataToAdapter(state.movies)
+                    adapter.notifyDataSetChanged()
+
                     progressBar.visibility = View.GONE
                     errorMessage.visibility = View.GONE
                 }

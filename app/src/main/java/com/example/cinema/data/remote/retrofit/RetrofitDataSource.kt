@@ -1,7 +1,6 @@
 package com.example.cinema.data.remote.retrofit
 
 import com.example.cinema.data.remote.RemoteDataSource
-import com.example.cinema.data.remote.retrofit.response.MovieDetailsResponse
 import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Genre
 import com.example.cinema.domain.model.Movie
@@ -9,13 +8,11 @@ import com.example.cinema.domain.model.MovieDetails
 
 internal class RetrofitDataSource(private val moviesApi: MoviesApi, private val imageUrlAppender : ImageUrlAppender) : RemoteDataSource {
 
-    override suspend fun loadMovies(): List<Movie> {
+    override suspend fun loadMovies(page : Int): List<Movie> {
 
         val genres = moviesApi.loadGenres().genres
 
-        // TODO из ViewModel передать номер страницы
-
-        return moviesApi.loadUpcoming(page = 1).results.map { movieResponse ->
+        return moviesApi.loadUpcoming(page).results.map { movieResponse ->
             Movie(
                 id = movieResponse.id,
                 title = movieResponse.title,
@@ -52,7 +49,6 @@ internal class RetrofitDataSource(private val moviesApi: MoviesApi, private val 
                     actorId = actor.id,
                     name = actor.name!!,
                     imageUrl = imageUrlAppender.getActorImageUrl(actor.profile_path) ?: "https://sopranoclub.ru/images/memy-na-avu-275-memnyh-avatarok/file56870.jpeg"
-                    //(if (imageUrlAppender.getActorImageUrl(actor.profile_path) != null) imageUrlAppender.getActorImageUrl(actor.profile_path) else "https://sopranoclub.ru/images/memy-na-avu-275-memnyh-avatarok/file56870.jpeg").toString()
                 )
             }
         )
