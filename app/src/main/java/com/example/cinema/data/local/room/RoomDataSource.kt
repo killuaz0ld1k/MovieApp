@@ -4,31 +4,12 @@ import com.example.cinema.data.local.LocalDataSource
 import com.example.cinema.data.local.room.dao.MoviesDao
 import com.example.cinema.data.local.room.entities.ActorEntity
 import com.example.cinema.data.local.room.entities.GenreEntity
-import com.example.cinema.data.local.room.entities.MovieEntity
-import com.example.cinema.data.remote.retrofit.ImageUrlAppender
+import com.example.cinema.data.local.room.entities.MovieDetailsEntity
 import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Genre
-import com.example.cinema.domain.model.Movie
 import com.example.cinema.domain.model.MovieDetails
 
-class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource { // TODO() сделать получение инстанса db вместо dao
-
-    override suspend fun getMovies(): List<Movie> {
-
-        return moviesDao.getMovies().map {
-            Movie(
-                id = it.movie.id,
-                title = it.movie.title,
-                rating = it.movie.rating,
-                runningTime = it.movie.runningTime,
-                reviewCount = it.movie.reviewCount,
-                pgAge = it.movie.pgAge,
-                isLiked = false,
-                imageUrl = it.movie.imageUrl,
-                genres = it.genres.map { genreEntity ->  Genre(genreEntity.genreId,genreEntity.name) }
-            )
-        }
-    }
+class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource { // перделать вот тут
 
     override suspend fun getMovie(movieId: Int): MovieDetails {
 
@@ -53,39 +34,37 @@ class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource { // TO
     }
 
     override fun insertMovieDetails(movieDetailsFromNetwork: MovieDetails) {
-        TODO("Not yet implemented")
+        movieDetailsFromNetwork.actors.forEach() {
+            moviesDao.insertActors(
+                ActorEntity(
+                    actorId = it.actorId,
+                    imageUrl = it.imageUrl,
+                    name = it.name,
+                    movieDetailsId = movieDetailsFromNetwork.id
+                )
+            )
+        }
+        movieDetailsFromNetwork.genres.forEach() {
+            moviesDao.insertGenres(
+                GenreEntity(
+                    genreId = it.id,
+                    name = it.name,
+                    movieDetailsId = movieDetailsFromNetwork.id
+                )
+            )
+        }
+        val movieDetailsEntity = movieDetailsFromNetwork.let {
+            MovieDetailsEntity(
+                movieDetailsId = it.id,
+                pgAge = it.pgAge,
+                title = it.title,
+                reviewCount = it.reviewCount,
+                isLiked = false,
+                rating = it.rating,
+                detailImageUrl = it.detailImageUrl,
+                storyLine = it.storyLine
+            )
+        }
+        moviesDao.insertMovieDetails(movieDetailsEntity)
     }
-
-//    override fun insertMovieDetails(movieDetailsFromNetwork: MovieDetails) {
-//        val movieDetailsEntity = movieDetailsFromNetwork.let {
-//            MovieDetailsEntity(
-//                parentId = it.id,
-//                pgAge = it.pgAge,
-//                title = it.title,
-//                reviewCount = it.reviewCount,
-//                isLiked = false,
-//                rating = it.rating,
-//                detailImageUrl = it.detailImageUrl,
-//                storyLine = it.storyLine
-//            )
-//        }
-//        movieDetailsFromNetwork.genres.forEach {
-//            val genreEntity = GenreEntity(
-//                genreId = it.id,
-//                name = it.name,
-//                parentId = movieDetailsFromNetwork.id
-//            )
-//            moviesDao.insertGenres(genreEntity)
-//        }
-//        movieDetailsFromNetwork.actors.forEach {
-//            val actorEntity = ActorEntity(
-//                actorId = it.actorId,
-//                name = it.name,
-//                imageUrl = it.imageUrl,
-//                parentId = movieDetailsFromNetwork.id
-//            )
-//            moviesDao.insertActors(actorEntity)
-//        }
-//        moviesDao.insertMovieDetails(movieDetailsEntity)
-//    }
 }
