@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import com.example.cinema.data.local.room.dao.MoviesDao
 import com.example.cinema.data.local.room.entities.GenreEntity
 import com.example.cinema.data.local.room.entities.MovieEntity
-import com.example.cinema.data.local.room.entities.MovieWithGenres
 
 @Database(entities = [GenreEntity::class,MovieEntity::class], version = 10)
 abstract class RoomDataBase : RoomDatabase() {

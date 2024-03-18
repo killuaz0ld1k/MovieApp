@@ -7,21 +7,12 @@ import androidx.room.PrimaryKey
 import com.example.cinema.data.local.room.entities.GenreEntity.Companion.GENRE_TABLE_ENTITY
 
 @Entity(
-    tableName = GENRE_TABLE_ENTITY,
-    primaryKeys = ["id"],
-    foreignKeys = [
-        ForeignKey(
-            entity = MovieEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["parentId"],
-            onDelete = ForeignKey.NO_ACTION
-        )
-    ]
+    tableName = GENRE_TABLE_ENTITY
 )
 data class GenreEntity(
-    val id: Int,
+    @PrimaryKey(autoGenerate = false) val genreId: Int,
     val name: String,
-    val parentId : Int
+    val movieDetailsId : Int
 ) {
     companion object {
         const val GENRE_TABLE_ENTITY = "genre_entity"

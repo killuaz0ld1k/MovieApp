@@ -48,8 +48,6 @@ class MovieDetailsFragment : Fragment() {
 
         val movieId = arguments?.getInt(MOVIE_ID) ?: return
 
-        val swipeRefreshLayout : SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout_movie_details)
-
         view.findViewById<RecyclerView>(R.id.recycler_movies).apply {
             this.layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
             this.adapter = MovieDetailsAdapter()
@@ -65,10 +63,6 @@ class MovieDetailsFragment : Fragment() {
             toBackListener?.clickBackButton()
         }
 
-        swipeRefreshLayout.setOnRefreshListener {
-            detailViewModel.loadMovieDetails(movieId)
-            swipeRefreshLayout.isRefreshing = false
-        }
     }
 
     override fun onDetach() {

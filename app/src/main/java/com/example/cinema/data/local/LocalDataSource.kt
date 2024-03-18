@@ -7,9 +7,7 @@ interface LocalDataSource {
 
     suspend fun getMovies() : List<Movie>
 
-    suspend fun insertMovies(movieFromNetwork : List<Movie>)
+    suspend fun getMovie(movieId: Int) : MovieDetails
 
-//    suspend fun getMovie(movieId: Int) : MovieDetails
-//
-//    fun insertMovieDetails(movieDetailsFromNetwork : MovieDetails)
+    fun insertMovieDetails(movieDetailsFromNetwork : MovieDetails)
 }

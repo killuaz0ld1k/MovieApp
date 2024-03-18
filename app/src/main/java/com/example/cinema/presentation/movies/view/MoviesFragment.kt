@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -17,13 +18,13 @@ import com.example.cinema.presentation.movies.adapter.MoviesAdapter
 import com.example.cinema.presentation.movies.viewModel.MoviesListViewModel
 import com.example.cinema.presentation.movies.viewModel.State
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MoviesFragment : Fragment() {
 
     private var listener : ClickListener? = null
     private val viewModel: MoviesListViewModel by viewModels()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,35 +39,39 @@ class MoviesFragment : Fragment() {
         val recycleMovies : RecyclerView = view.findViewById(R.id.recycler_movies)
 
         recycleMovies.apply {
-            // this.setHasFixedSize(true)
-            this.layoutManager = GridLayoutManager(this.context,2)
+
+            val layoutManager = GridLayoutManager(this.context,2)
             val adapter = MoviesAdapter {movieId ->
                 listener?.onClickItem(movieId)
             }
+
+            this.layoutManager = layoutManager
             this.adapter = adapter
-            loadDataToAdapter(adapter,view)
+
+            observeViewModel(adapter,view)
+
             swipeRefresh.setOnRefreshListener {
                 viewModel.currentPage = 1
                 adapter.clearMovies()
-                loadDataToAdapter(adapter,view)
+                loadMovies()
                 swipeRefresh.isRefreshing = false
             }
-        }
-        recycleMovies.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as GridLayoutManager
-                val visibleItemCount = layoutManager.childCount
-                val totalItemCount = layoutManager.itemCount
-                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            this.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-                if (!viewModel.isLoading && visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
-                    viewModel.loadMovies()
+                    if (!viewModel.isLoading && visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                        viewModel.loadMoviesFromRepository()
+                    }
                 }
-            }
-        })
+            })
+        }
+        loadMovies()
     }
-    private fun loadDataToAdapter(adapter: MoviesAdapter, view : View) { // TODO() выяснить почему не обновляются данные после эрора
+    private fun observeViewModel(adapter: MoviesAdapter, view : View) { // TODO() выяснить почему не обновляются данные после эрора
 
         val progressBar : ProgressBar = view.findViewById(R.id.progress_bar)
         val errorMessage : TextView = view.findViewById(R.id.error_message_textView)
@@ -90,7 +95,12 @@ class MoviesFragment : Fragment() {
                 }
             }
         }
-        viewModel.loadMovies()
+    }
+
+    private fun loadMovies() {
+        lifecycleScope.launch {
+            viewModel.loadMoviesFromRepository()
+        }
     }
 
     override fun onAttach(context: Context) {

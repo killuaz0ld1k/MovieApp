@@ -2,6 +2,7 @@ package com.example.cinema.data.local.room
 
 import com.example.cinema.data.local.LocalDataSource
 import com.example.cinema.data.local.room.dao.MoviesDao
+import com.example.cinema.data.local.room.entities.ActorEntity
 import com.example.cinema.data.local.room.entities.GenreEntity
 import com.example.cinema.data.local.room.entities.MovieEntity
 import com.example.cinema.data.remote.retrofit.ImageUrlAppender
@@ -24,56 +25,37 @@ class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource { // TO
                 pgAge = it.movie.pgAge,
                 isLiked = false,
                 imageUrl = it.movie.imageUrl,
-                genres = it.genres.map { genreEntity ->  Genre(genreEntity.id,genreEntity.name) }
+                genres = it.genres.map { genreEntity ->  Genre(genreEntity.genreId,genreEntity.name) }
             )
         }
     }
 
-    override suspend fun insertMovies(movieFromNetwork: List<Movie>) {
-        moviesDao.insertMovies(
-            movieFromNetwork.map {
-                MovieEntity(
-                    id = it.id,
-                    pgAge = it.pgAge,
-                    title = it.title,
-                    runningTime = it.runningTime,
-                    reviewCount = it.reviewCount,
-                    isLiked = false,
-                    rating = it.rating,
-                    imageUrl = it.imageUrl
-                )
-            }
+    override suspend fun getMovie(movieId: Int): MovieDetails {
+
+        val movieDetailsWithGenresAndActors = moviesDao.getMovieDetails(movieId).firstOrNull() ?: throw NoSuchElementException("MovieDetails with ID $movieId not found")
+
+        val movieDetails = movieDetailsWithGenresAndActors.movieDetails
+        val actors = movieDetailsWithGenresAndActors.actors.map { actorEntity -> Actor(actorId = actorEntity.actorId, imageUrl = actorEntity.imageUrl, name = actorEntity.name) }
+        val genres = movieDetailsWithGenresAndActors.genres.map { genreEntity -> Genre(id = genreEntity.genreId, name = genreEntity.name) }
+
+        return MovieDetails(
+            id = movieDetails.movieDetailsId,
+            title = movieDetails.title,
+            pgAge = movieDetails.pgAge,
+            rating = movieDetails.rating,
+            reviewCount = movieDetails.reviewCount,
+            storyLine = movieDetails.storyLine,
+            isLiked = false,
+            detailImageUrl = movieDetails.detailImageUrl,
+            genres = genres,
+            actors = actors
         )
-        val genreEntities = mutableListOf<GenreEntity>()
-        movieFromNetwork.forEach { movie ->
-            movie.genres.forEach { genre ->
-                genreEntities.add(GenreEntity(genre.id, genre.name, movie.id))
-            }
-        }
-        moviesDao.insertGenres(genreEntities)
     }
-//    override suspend fun getMovie(movieId: Int): MovieDetails {
-//        val movieDetailsWithActorsAndGenres = moviesDao.getMovie() ?: throw IllegalStateException("Movie details are null")
-//
-//        return MovieDetails(
-//            id = movieDetailsWithActorsAndGenres.movieDetails.parentId,
-//            pgAge = movieDetailsWithActorsAndGenres.movieDetails.pgAge,
-//            title = movieDetailsWithActorsAndGenres.movieDetails.title,
-//            genres = movieDetailsWithActorsAndGenres.genres.map { genreEntity -> Genre(genreEntity.genreId, genreEntity.name) },
-//            reviewCount = movieDetailsWithActorsAndGenres.movieDetails.reviewCount,
-//            isLiked = false,
-//            rating = movieDetailsWithActorsAndGenres.movieDetails.rating,
-//            detailImageUrl = movieDetailsWithActorsAndGenres.movieDetails.detailImageUrl,
-//            storyLine = movieDetailsWithActorsAndGenres.movieDetails.storyLine,
-//            actors = movieDetailsWithActorsAndGenres.actors.map { actor ->
-//                Actor(
-//                    actorId = actor.actorId,
-//                    name = actor.name,
-//                    imageUrl = actor.imageUrl
-//                )
-//            }
-//        )
-//    }
+
+    override fun insertMovieDetails(movieDetailsFromNetwork: MovieDetails) {
+        TODO("Not yet implemented")
+    }
+
 //    override fun insertMovieDetails(movieDetailsFromNetwork: MovieDetails) {
 //        val movieDetailsEntity = movieDetailsFromNetwork.let {
 //            MovieDetailsEntity(

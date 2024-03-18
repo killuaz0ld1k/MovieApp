@@ -1,7 +1,9 @@
-package com.example.cinema.data.local.room.entities
+package com.example.cinema.data.local.room.entities.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.example.cinema.data.local.room.entities.GenreEntity
+import com.example.cinema.data.local.room.entities.MovieEntity
 
 data class MovieWithGenres (
 

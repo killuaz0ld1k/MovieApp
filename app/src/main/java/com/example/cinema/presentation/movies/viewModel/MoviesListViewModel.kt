@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.cinema.domain.model.Movie
 import com.example.cinema.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,23 +24,25 @@ class MoviesListViewModel @Inject constructor(private val repository: MovieRepos
 
     init {
         _state.postValue(State.isLoading())
-        loadMovies()
+        loadMoviesFromRepository()
     }
 
     @SuppressLint("SuspiciousIndentation")
-    fun loadMovies() {
+    fun loadMoviesFromRepository() {
         if (isLoading) {
             return
         }
+        _state.postValue(State.isLoading())
         isLoading = true
             viewModelScope.launch {
                 try {
-                    _state.postValue(State.isLoading())
                     _state.postValue(State.Success(repository.loadMovies(currentPage)))
                     currentPage++
-                    isLoading = false
                 } catch (e: Exception) {
                     _state.postValue(State.Error())
+                }
+                finally {
+                    isLoading = false
                 }
             }
     }
