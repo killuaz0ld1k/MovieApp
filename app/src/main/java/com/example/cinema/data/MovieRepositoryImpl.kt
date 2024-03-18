@@ -10,19 +10,18 @@ import com.example.cinema.domain.repository.MovieRepository
 class MovieRepositoryImpl(private val remoteDataSource : RemoteDataSource,private val localDataSource: LocalDataSource) : MovieRepository {
 
     override suspend fun loadMovies(page : Int): List<Movie> {
+
+//        val movieDb = localDataSource.getMovies()
+//        if (movieDb.isEmpty()) {
+//            val movieFromNetwork = remoteDataSource.loadMovies()
+//            localDataSource.insertMovies(movieFromNetwork)
+//            return movieFromNetwork
+//        }
+//        else return movieDb
         return remoteDataSource.loadMovies(page)
     }
 
     override suspend fun loadMovie(movieId: Int) : MovieDetails {
-
-        val request = try {
-            localDataSource.getMovie(movieId)
-        }
-        catch (e: NoSuchElementException) {
-            val movieDetails = remoteDataSource.loadMovie(movieId)
-            localDataSource.insertMovieDetails(movieDetails)
-            movieDetails
-        }
-        return request
+        return remoteDataSource.loadMovie(movieId)
     }
 }
