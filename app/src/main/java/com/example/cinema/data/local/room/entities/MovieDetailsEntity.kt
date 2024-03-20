@@ -2,10 +2,11 @@ package com.example.cinema.data.local.room.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.cinema.data.local.room.entities.MovieDetailsEntity.Companion.TABLE_NAME
 import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Genre
 
-@Entity
+@Entity(tableName = TABLE_NAME)
 data class MovieDetailsEntity(
     @PrimaryKey(autoGenerate = false) val movieDetailsId: Int,
     val pgAge: Int,
