@@ -5,30 +5,11 @@ import com.example.cinema.data.local.room.dao.MoviesDao
 import com.example.cinema.data.local.room.entities.ActorEntity
 import com.example.cinema.data.local.room.entities.GenreEntity
 import com.example.cinema.data.local.room.entities.MovieDetailsEntity
-import com.example.cinema.data.local.room.entities.MovieEntity
-import com.example.cinema.data.remote.retrofit.ImageUrlAppender
 import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Genre
-import com.example.cinema.domain.model.Movie
 import com.example.cinema.domain.model.MovieDetails
 
-class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource { // TODO() сделать получение инстанса db вместо dao
-    override suspend fun getMovies(): List<Movie> {
-
-        return moviesDao.getMovies().map {
-            Movie(
-                id = it.movie.id,
-                title = it.movie.title,
-                rating = it.movie.rating,
-                runningTime = it.movie.runningTime,
-                reviewCount = it.movie.reviewCount,
-                pgAge = it.movie.pgAge,
-                isLiked = false,
-                imageUrl = it.movie.imageUrl,
-                genres = it.genres.map { genreEntity ->  Genre(genreEntity.genreId,genreEntity.name) }
-            )
-        }
-    }
+class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource { // перделать вот тут
 
     override suspend fun getMovie(movieId: Int): MovieDetails {
 

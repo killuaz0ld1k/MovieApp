@@ -5,7 +5,7 @@ import com.example.cinema.domain.model.MovieDetails
 
 interface LocalDataSource {
 
-    suspend fun getMovies() : List<Movie>
+    // suspend fun getMovies() : List<Movie>
 
     suspend fun getMovie(movieId: Int) : MovieDetails
 
