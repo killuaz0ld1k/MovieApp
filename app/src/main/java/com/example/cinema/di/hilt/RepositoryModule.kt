@@ -30,7 +30,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideLocalDataSource(roomDataBase: RoomDataBase) : LocalDataSource = RoomDataSource(roomDataBase.moviesDao())
+    fun provideLocalDataSource(roomDataBase: RoomDataBase) : LocalDataSource = RoomDataSource(roomDataBase)
 
     @Provides
     @Singleton

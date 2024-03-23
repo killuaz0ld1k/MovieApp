@@ -9,8 +9,9 @@ import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Genre
 import com.example.cinema.domain.model.MovieDetails
 
-class RoomDataSource(private val moviesDao: MoviesDao) : LocalDataSource { // перделать вот тут
+class RoomDataSource(private val db: RoomDataBase) : LocalDataSource {
 
+    private val moviesDao = db.moviesDao()
     override suspend fun getMovie(movieId: Int): MovieDetails {
 
         val movieDetailsWithGenresAndActors = moviesDao.getMovieDetails(movieId).firstOrNull() ?: throw NoSuchElementException("MovieDetails with ID $movieId not found")
