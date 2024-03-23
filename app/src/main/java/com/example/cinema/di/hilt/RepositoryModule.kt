@@ -1,10 +1,9 @@
 package com.example.cinema.di.hilt
 
-import com.example.cinema.data.MovieRepositoryImpl
+import com.example.cinema.data.repository.MovieRepositoryImpl
 import com.example.cinema.data.local.LocalDataSource
 import com.example.cinema.data.local.room.RoomDataBase
 import com.example.cinema.data.local.room.RoomDataSource
-import com.example.cinema.data.local.room.dao.MoviesDao
 import com.example.cinema.data.remote.RemoteDataSource
 import com.example.cinema.data.remote.retrofit.ImageUrlAppender
 import com.example.cinema.data.remote.retrofit.MoviesApi

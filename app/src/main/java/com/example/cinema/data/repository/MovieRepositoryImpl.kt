@@ -1,4 +1,4 @@
-package com.example.cinema.data
+package com.example.cinema.data.repository
 
 import com.example.cinema.data.local.LocalDataSource
 import com.example.cinema.data.remote.RemoteDataSource

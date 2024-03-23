@@ -16,7 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.cinema.R
 import com.example.cinema.presentation.movies.adapter.MoviesAdapter
 import com.example.cinema.presentation.movies.viewModel.MoviesListViewModel
-import com.example.cinema.presentation.movies.viewModel.State
+import com.example.cinema.domain.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -78,18 +78,18 @@ class MoviesFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) {state ->
             when (state) {
-                is State.isLoading -> {
+                is Result.Loading -> {
                     errorMessage.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
                 }
-                is State.Success -> {
-                    adapter.addDataToAdapter(state.movies)
+                is Result.Success -> {
+                    adapter.addDataToAdapter(state.data.orEmpty())
                     adapter.notifyDataSetChanged()
 
                     progressBar.visibility = View.GONE
                     errorMessage.visibility = View.GONE
                 }
-                is State.Error -> {
+                is Result.Error -> {
                     progressBar.visibility = View.GONE
                     errorMessage.visibility = View.VISIBLE
                 }
