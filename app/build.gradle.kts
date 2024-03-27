@@ -68,13 +68,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.github.skydoves:retrofit-adapters-result:1.0.9")
 
     //hilt
     implementation("com.google.dagger:hilt-android:2.50")
     kapt("com.google.dagger:hilt-android-compiler:2.50")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     // room
     implementation("androidx.room:room-runtime:2.6.1")
