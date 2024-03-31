@@ -23,9 +23,8 @@ internal class RetrofitDataSource(private val moviesApi: MoviesApi, private val 
                 isLiked = false,
                 imageUrl = imageUrlAppender.getMoviePosterImageUrl(movieResponse.posterPath),
                 genres = genres
-                    .filter { genreResponse -> movieResponse.genreIds.contains(genreResponse.id) } // Todo разобраться почему выдаёт ошибку
+                    .filter { genreResponse -> movieResponse.genreIds.contains(genreResponse.id) }
                     .map { genre -> Genre(genre.id, genre.name) }
-                // что тут за хуйня происходит ??????
             )
         }
     }
