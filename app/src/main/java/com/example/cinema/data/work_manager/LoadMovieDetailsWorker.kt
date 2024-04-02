@@ -23,7 +23,7 @@ class LoadMovieDetailsWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return try {
             withContext(Dispatchers.IO) {
-                localDataSource.insertMovieDetails(remoteDataSource.loadMovie(1125311))
+                localDataSource.insertMovieDetails(remoteDataSource.loadMovie(inputData.getInt("id",0)))
             }
             Log.i("movie","success")
             Result.success()

@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Constraints
+import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
@@ -69,7 +70,7 @@ class MovieDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.back_button_layout).setOnClickListener() {
             toBackListener?.clickBackButton()
         }
-        startWork()
+        startWork(movieId)
 
     }
 
@@ -116,17 +117,21 @@ class MovieDetailsFragment : Fragment() {
             )
         }
     }
-    private fun startWork() {
+    private fun startWork(movieId: Int) {
+
+        val movieData = Data.Builder().putInt("id",movieId).build()
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresCharging(true)
             .build()
 
-        val periodicWorkRequest = PeriodicWorkRequest.Builder(LoadMovieDetailsWorker::class.java,15,TimeUnit.MINUTES)
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(LoadMovieDetailsWorker::class.java,8,TimeUnit.HOURS)
             .setConstraints(constraints)
+            .setInputData(movieData)
+            .setInitialDelay(4,TimeUnit.HOURS)
             .build()
 
-        WorkManager.getInstance(requireContext()).enqueue(periodicWorkRequest)
+        WorkManager.getInstance(this.requireContext()).enqueue(periodicWorkRequest)
     }
     companion object {
         private const val MOVIE_ID = "movie_id"
