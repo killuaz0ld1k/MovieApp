@@ -1,7 +1,6 @@
 package com.example.cinema.data.local.room
 
 import com.example.cinema.data.local.LocalDataSource
-import com.example.cinema.data.local.room.dao.MoviesDao
 import com.example.cinema.data.local.room.entities.ActorEntity
 import com.example.cinema.data.local.room.entities.GenreEntity
 import com.example.cinema.data.local.room.entities.MovieDetailsEntity
@@ -9,13 +8,12 @@ import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Genre
 import com.example.cinema.domain.model.MovieDetails
 
-class RoomDataSource(private val db: RoomDataBase) : LocalDataSource {
+class RoomDataSource(private val db : RoomDataBase) : LocalDataSource {
 
     private val moviesDao = db.moviesDao()
+
     override suspend fun getMovie(movieId: Int): MovieDetails {
-
         val movieDetailsWithGenresAndActors = moviesDao.getMovieDetails(movieId).firstOrNull() ?: throw NoSuchElementException("MovieDetails with ID $movieId not found")
-
         val movieDetails = movieDetailsWithGenresAndActors.movieDetails
         val actors = movieDetailsWithGenresAndActors.actors.map { actorEntity -> Actor(actorId = actorEntity.actorId, imageUrl = actorEntity.imageUrl, name = actorEntity.name) }
         val genres = movieDetailsWithGenresAndActors.genres.map { genreEntity -> Genre(id = genreEntity.genreId, name = genreEntity.name) }

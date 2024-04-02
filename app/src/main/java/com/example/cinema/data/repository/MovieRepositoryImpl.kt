@@ -1,4 +1,4 @@
-package com.example.cinema.data
+package com.example.cinema.data.repository
 
 import com.example.cinema.data.local.LocalDataSource
 import com.example.cinema.data.remote.RemoteDataSource
@@ -16,7 +16,10 @@ class MovieRepositoryImpl(private val remoteDataSource : RemoteDataSource,privat
     override suspend fun loadMovie(movieId: Int) : MovieDetails {
 
         val request = try {
-            localDataSource.getMovie(movieId)
+
+            val movieDetails = localDataSource.getMovie(movieId)
+            movieDetails
+            
         }
         catch (e: NoSuchElementException) {
             val movieDetails = remoteDataSource.loadMovie(movieId)

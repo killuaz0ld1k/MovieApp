@@ -15,13 +15,19 @@ import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import coil.load
 import com.example.cinema.R
+import com.example.cinema.data.work_manager.LoadMovieDetailsWorker
 import com.example.cinema.domain.model.MovieDetails
 import com.example.cinema.presentation.moviedetails.adapter.MovieDetailsAdapter
 import com.example.cinema.presentation.moviedetails.viewModel.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
@@ -54,6 +60,7 @@ class MovieDetailsFragment : Fragment() {
         }
 
         detailViewModel.loadMovieDetails(movieId)
+
         detailViewModel.movieDetailsList.observe(viewLifecycleOwner) {
             loadDataToFragment(it)
             loadDataToAdapter(view, it)
@@ -62,6 +69,7 @@ class MovieDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.back_button_layout).setOnClickListener() {
             toBackListener?.clickBackButton()
         }
+        startWork()
 
     }
 
@@ -107,6 +115,18 @@ class MovieDetailsFragment : Fragment() {
                 )
             )
         }
+    }
+    private fun startWork() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresCharging(true)
+            .build()
+
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(LoadMovieDetailsWorker::class.java,15,TimeUnit.MINUTES)
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(requireContext()).enqueue(periodicWorkRequest)
     }
     companion object {
         private const val MOVIE_ID = "movie_id"

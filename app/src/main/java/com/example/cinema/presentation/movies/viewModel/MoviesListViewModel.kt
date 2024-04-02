@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cinema.domain.model.Movie
 import com.example.cinema.domain.repository.MovieRepository
+import com.example.cinema.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,41 +16,33 @@ import javax.inject.Inject
 
 class MoviesListViewModel @Inject constructor(private val repository: MovieRepository) : ViewModel() {
 
-    private val _state: MutableLiveData<State> = MutableLiveData()
-    val state: LiveData<State> = _state
+    private val _state: MutableLiveData<Result<List<Movie>>> = MutableLiveData()
+    val state: LiveData<Result<List<Movie>>> = _state
 
     var currentPage = 1
-
     var isLoading = false
 
     init {
-        _state.postValue(State.isLoading())
         loadMoviesFromRepository()
     }
-
     @SuppressLint("SuspiciousIndentation")
     fun loadMoviesFromRepository() {
         if (isLoading) {
             return
         }
-        _state.postValue(State.isLoading())
+        _state.postValue(Result.Loading())
         isLoading = true
             viewModelScope.launch {
                 try {
-                    _state.postValue(State.Success(repository.loadMovies(currentPage)))
+                    val response = repository.loadMovies(currentPage)
+                    _state.postValue(Result.Success(response))
                     currentPage++
                 } catch (e: Exception) {
-                    _state.postValue(State.Error())
+                    _state.postValue(Result.Error(e.message))
                 }
                 finally {
                     isLoading = false
                 }
             }
     }
-}
-
-sealed class State {
-    class isLoading : State()
-    class Error : State()
-    data class Success(val movies : List<Movie>) : State()
 }
