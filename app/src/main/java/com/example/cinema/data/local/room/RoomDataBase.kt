@@ -8,7 +8,7 @@ import com.example.cinema.data.local.room.entities.GenreEntity
 import com.example.cinema.data.local.room.entities.MovieDetailsEntity
 import com.example.cinema.data.local.room.entities.MovieEntity
 
-@Database(entities = [GenreEntity::class,MovieEntity::class,ActorEntity::class,MovieDetailsEntity::class], version = 11)
+@Database(entities = [GenreEntity::class,MovieEntity::class,ActorEntity::class,MovieDetailsEntity::class], version = 11, exportSchema = false)
 abstract class RoomDataBase : RoomDatabase() {
     abstract fun moviesDao() : MoviesDao
 }

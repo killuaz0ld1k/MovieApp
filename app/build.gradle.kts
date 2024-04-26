@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
+    id("androidx.navigation.safeargs.kotlin")
+
     kotlin("kapt")
     kotlin("plugin.serialization") version "1.9.22"
 }
@@ -49,6 +51,11 @@ android {
 
 dependencies {
 
+
+    val nav_version = "2.7.7"
+    val work_version = "2.9.0"
+
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("io.coil-kt:coil:2.5.0")
@@ -57,8 +64,13 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
 
-    val work_version = "2.9.0"
+    // workManager
     implementation("androidx.work:work-runtime-ktx:$work_version")
+
+    // navigation
+    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+
 
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     testImplementation("junit:junit:4.13.2")
@@ -87,3 +99,4 @@ dependencies {
 kapt {
     correctErrorTypes = true
 }
+

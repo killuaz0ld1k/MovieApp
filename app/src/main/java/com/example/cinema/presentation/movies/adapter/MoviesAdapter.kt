@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -16,6 +17,8 @@ import coil.load
 import com.example.cinema.R
 import com.example.cinema.domain.model.Actor
 import com.example.cinema.domain.model.Movie
+import com.example.cinema.presentation.movies.view.MoviesFragment
+import com.example.cinema.presentation.movies.view.MoviesFragmentDirections
 
 class MoviesAdapter(private val onClickItem : (movieId : Int) -> Unit) : Adapter<MoviesViewHolder>() {
 
@@ -95,6 +98,8 @@ class MoviesViewHolder(itemView : View) : ViewHolder(itemView) {
         itemView.setOnClickListener {
             onClickItem(item.id)
         }
+
+
     }
     private fun updateLikeColor(isLiked : Boolean) {
         if (isLiked) {

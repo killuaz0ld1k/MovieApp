@@ -1,5 +1,6 @@
 package com.example.cinema.presentation.movies.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -18,6 +20,7 @@ import com.example.cinema.presentation.movies.adapter.MoviesAdapter
 import com.example.cinema.presentation.movies.viewModel.MoviesListViewModel
 import com.example.cinema.domain.util.Result
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -35,6 +38,7 @@ class MoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val swipeRefresh : SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         val recycleMovies : RecyclerView = view.findViewById(R.id.recycler_movies)
 
@@ -42,7 +46,7 @@ class MoviesFragment : Fragment() {
 
             val layoutManager = GridLayoutManager(this.context,2)
             val adapter = MoviesAdapter {movieId ->
-                listener?.onClickItem(movieId)
+                listener?.onClickItem(movieId,view)
             }
 
             this.layoutManager = layoutManager
@@ -64,14 +68,14 @@ class MoviesFragment : Fragment() {
                     val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
                     if (!viewModel.isLoading && visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
-                        viewModel.loadMoviesFromRepository()
+                        loadMovies()
                     }
                 }
             })
         }
         loadMovies()
     }
-    private fun observeViewModel(adapter: MoviesAdapter, view : View) { // TODO() выяснить почему не обновляются данные после эрора
+    private fun observeViewModel(adapter: MoviesAdapter, view : View) {
 
         val progressBar : ProgressBar = view.findViewById(R.id.progress_bar)
         val errorMessage : TextView = view.findViewById(R.id.error_message_textView)
@@ -98,7 +102,7 @@ class MoviesFragment : Fragment() {
     }
 
     private fun loadMovies() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.Default) {
             viewModel.loadMoviesFromRepository()
         }
     }

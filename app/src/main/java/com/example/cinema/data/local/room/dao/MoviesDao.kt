@@ -14,18 +14,15 @@ import com.example.cinema.data.local.room.entities.relations.MovieWithGenres
 
 @Dao
 interface MoviesDao {
-//    @Transaction
-//    @Query("SELECT * FROM ${MovieEntity.MOVIE_TABLE_NAME}")
-//    suspend fun getMovies() : List<MovieWithGenres>1
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertGenres(genre: GenreEntity)
+    suspend fun insertGenres(genre: GenreEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertActors(actor: ActorEntity)
+    suspend fun insertActors(actor: ActorEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovieDetails(movieDetailsEntity: MovieDetailsEntity)
+    suspend fun insertMovieDetails(movieDetailsEntity: MovieDetailsEntity)
 
     @Transaction
     @Query("SELECT * FROM ${MovieDetailsEntity.TABLE_NAME} WHERE movieDetailsId = :movieDetailsId")
