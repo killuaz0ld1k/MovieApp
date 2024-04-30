@@ -2,6 +2,8 @@ package com.example.cinema.presentation.movies.view
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -18,13 +19,15 @@ import com.example.cinema.presentation.movies.adapter.MoviesAdapter
 import com.example.cinema.presentation.movies.viewModel.MoviesListViewModel
 import com.example.cinema.domain.util.Result
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MoviesFragment : Fragment() {
 
     private var listener : ClickListener? = null
     private val viewModel: MoviesListViewModel by viewModels()
+    private lateinit var layoutManagerGrid : GridLayoutManager
+    private lateinit var recycleMovies : RecyclerView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,72 +37,67 @@ class MoviesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+
         super.onViewCreated(view, savedInstanceState)
-        val swipeRefresh : SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        val recycleMovies : RecyclerView = view.findViewById(R.id.recycler_movies)
+
+        // val swipeRefresh : SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        recycleMovies = view.findViewById(R.id.recycler_movies)
 
         recycleMovies.apply {
 
-            val layoutManager = GridLayoutManager(this.context,2)
+            layoutManagerGrid = GridLayoutManager(this.context,2)
             val adapter = MoviesAdapter {movieId ->
-                listener?.onClickItem(movieId)
+                listener?.onClickItem(movieId,view)
             }
 
-            this.layoutManager = layoutManager
+
+            this.layoutManager = layoutManagerGrid
             this.adapter = adapter
 
-            observeViewModel(adapter,view)
+//            swipeRefresh.setOnRefreshListener {
+//                viewModel.currentPage = 1
+//                adapter.clearMovies()
+//                viewModel.loadMoviesFromRepository()
+//                swipeRefresh.isRefreshing = false
+//            }
 
-            swipeRefresh.setOnRefreshListener {
-                viewModel.currentPage = 1
-                adapter.clearMovies()
-                loadMovies()
-                swipeRefresh.isRefreshing = false
-            }
-            this.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    val visibleItemCount = layoutManager.childCount
-                    val totalItemCount = layoutManager.itemCount
-                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            this.addOnScrollListener(object : PaginationScrollListener(layoutManagerGrid) {
 
-                    if (!viewModel.isLoading && visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
-                        viewModel.loadMoviesFromRepository()
-                    }
+                override fun loadMoreItems()  {
+                    viewModel.currentPage += 1
+                    Log.d("MoviesListViewModel", "Current page before loading: $viewModel.currentPage")
+                    viewModel.loadMoviesFromRepository()
                 }
+                override fun isLoading(): Boolean = viewModel.isLoading
             })
+            observeViewModel(adapter,view)
         }
-        loadMovies()
-    }
-    private fun observeViewModel(adapter: MoviesAdapter, view : View) { // TODO() выяснить почему не обновляются данные после эрора
 
-        val progressBar : ProgressBar = view.findViewById(R.id.progress_bar)
-        val errorMessage : TextView = view.findViewById(R.id.error_message_textView)
+    }
+    private fun observeViewModel(adapter: MoviesAdapter, view : View) {
+
+//        val progressBar : ProgressBar = view.findViewById(R.id.progress_bar)
+//        val errorMessage : TextView = view.findViewById(R.id.error_message_textView)
 
         viewModel.state.observe(viewLifecycleOwner) {state ->
             when (state) {
                 is Result.Loading -> {
-                    errorMessage.visibility = View.GONE
-                    progressBar.visibility = View.VISIBLE
+//                    errorMessage.visibility = View.GONE
+//                    progressBar.visibility = View.VISIBLE
                 }
                 is Result.Success -> {
-                    adapter.addDataToAdapter(state.data.orEmpty())
-                    adapter.notifyDataSetChanged()
+                    adapter.saveData(state.data.orEmpty())
 
-                    progressBar.visibility = View.GONE
-                    errorMessage.visibility = View.GONE
+//                    progressBar.visibility = View.GONE
+//                    errorMessage.visibility = View.GONE
                 }
                 is Result.Error -> {
-                    progressBar.visibility = View.GONE
-                    errorMessage.visibility = View.VISIBLE
+//                    progressBar.visibility = View.GONE
+//                    errorMessage.text = state.message
+//                    errorMessage.visibility = View.VISIBLE
                 }
             }
-        }
-    }
-
-    private fun loadMovies() {
-        lifecycleScope.launch {
-            viewModel.loadMoviesFromRepository()
         }
     }
 
@@ -114,4 +112,19 @@ class MoviesFragment : Fragment() {
         super.onDetach()
         listener = null
     }
+
+//    override fun onPause() {
+//        super.onPause()
+//        val firstVisibleItemPosition = layoutManagerGrid.findFirstVisibleItemPosition()
+//        val spanCount = layoutManagerGrid.spanCount
+//        viewModel.recyclerViewScrollPositionRow = firstVisibleItemPosition / spanCount
+//        viewModel.recyclerViewScrollPositionColumn = firstVisibleItemPosition % spanCount
+//    }
+//    override fun onResume() {
+//        super.onResume()
+//        val spanCount = layoutManagerGrid.spanCount
+//        val position = viewModel.recyclerViewScrollPositionRow * spanCount +
+//                viewModel.recyclerViewScrollPositionColumn
+//        layoutManagerGrid.scrollToPosition(position)
+//    }
 }

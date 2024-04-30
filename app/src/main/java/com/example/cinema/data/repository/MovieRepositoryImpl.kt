@@ -16,10 +16,8 @@ class MovieRepositoryImpl(private val remoteDataSource : RemoteDataSource,privat
     override suspend fun loadMovie(movieId: Int) : MovieDetails {
 
         val request = try {
-
             val movieDetails = localDataSource.getMovie(movieId)
             movieDetails
-            
         }
         catch (e: NoSuchElementException) {
             val movieDetails = remoteDataSource.loadMovie(movieId)

@@ -12,4 +12,9 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">#FF3466</item>
     </style>
+    <style name="NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>

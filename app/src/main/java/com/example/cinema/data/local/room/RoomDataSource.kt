@@ -32,7 +32,7 @@ class RoomDataSource(private val db : RoomDataBase) : LocalDataSource {
         )
     }
 
-    override fun insertMovieDetails(movieDetailsFromNetwork: MovieDetails) {
+    override suspend fun insertMovieDetails(movieDetailsFromNetwork: MovieDetails) {
         movieDetailsFromNetwork.actors.forEach() {
             moviesDao.insertActors(
                 ActorEntity(

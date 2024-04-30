@@ -13,12 +13,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Constraints
+import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import coil.load
 import com.example.cinema.R
@@ -34,6 +35,8 @@ class MovieDetailsFragment : Fragment() {
 
     private val detailViewModel : MovieDetailsViewModel by viewModels()
     private var toBackListener : BackToListMovies? = null
+    private val args: MovieDetailsFragmentArgs by navArgs()
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -52,7 +55,7 @@ class MovieDetailsFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        val movieId = arguments?.getInt(MOVIE_ID) ?: return
+        val movieId = args.movieId
 
         view.findViewById<RecyclerView>(R.id.recycler_movies).apply {
             this.layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
@@ -67,9 +70,9 @@ class MovieDetailsFragment : Fragment() {
         }
 
         view.findViewById<View>(R.id.back_button_layout).setOnClickListener() {
-            toBackListener?.clickBackButton()
+            toBackListener?.clickBackButton(it)
         }
-        startWork()
+        // startWork(movieId)
 
     }
 
@@ -116,24 +119,20 @@ class MovieDetailsFragment : Fragment() {
             )
         }
     }
-    private fun startWork() {
+    private fun startWork(movieId: Int) {
+
+        val movieData = Data.Builder().putInt("id",movieId).build()
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresCharging(true)
             .build()
 
-        val periodicWorkRequest = PeriodicWorkRequest.Builder(LoadMovieDetailsWorker::class.java,15,TimeUnit.MINUTES)
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(LoadMovieDetailsWorker::class.java,8,TimeUnit.HOURS)
             .setConstraints(constraints)
+            .setInputData(movieData)
+            .setInitialDelay(4,TimeUnit.HOURS)
             .build()
 
-        WorkManager.getInstance(requireContext()).enqueue(periodicWorkRequest)
-    }
-    companion object {
-        private const val MOVIE_ID = "movie_id"
-        fun newInstance(movieId : Int) =
-            MovieDetailsFragment().also {
-                val args = bundleOf(MOVIE_ID to movieId)
-                it.arguments = args
-            }
+        WorkManager.getInstance(this.requireContext()).enqueue(periodicWorkRequest)
     }
 }
