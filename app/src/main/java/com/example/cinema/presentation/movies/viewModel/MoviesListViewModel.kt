@@ -1,6 +1,7 @@
 package com.example.cinema.presentation.movies.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,8 +21,15 @@ class MoviesListViewModel @Inject constructor(private val repository: MovieRepos
     private val _state: MutableLiveData<Result<List<Movie>>> = MutableLiveData()
     val state: LiveData<Result<List<Movie>>> = _state
 
+    var recyclerViewScrollPositionRow: Int = 0
+    var recyclerViewScrollPositionColumn: Int = 0
+
     var currentPage : Int = 1
     var isLoading = false
+
+    init {
+        loadMoviesFromRepository()
+    }
 
     @SuppressLint("SuspiciousIndentation")
     fun loadMoviesFromRepository() {
@@ -34,7 +42,7 @@ class MoviesListViewModel @Inject constructor(private val repository: MovieRepos
                 try {
                     val response = repository.loadMovies(currentPage)
                     _state.postValue(Result.Success(response))
-                    currentPage++
+                    // currentPage++
                 } catch (e: Exception) {
                     _state.postValue(Result.Error(e.message))
                 }

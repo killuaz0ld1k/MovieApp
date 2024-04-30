@@ -55,7 +55,7 @@ class MovieDetailsFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        val movieId = arguments?.getInt(MOVIE_ID) ?: return
+        val movieId = args.movieId
 
         view.findViewById<RecyclerView>(R.id.recycler_movies).apply {
             this.layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
@@ -70,9 +70,9 @@ class MovieDetailsFragment : Fragment() {
         }
 
         view.findViewById<View>(R.id.back_button_layout).setOnClickListener() {
-            toBackListener?.clickBackButton()
+            toBackListener?.clickBackButton(it)
         }
-        startWork(movieId)
+        // startWork(movieId)
 
     }
 
@@ -134,13 +134,5 @@ class MovieDetailsFragment : Fragment() {
             .build()
 
         WorkManager.getInstance(this.requireContext()).enqueue(periodicWorkRequest)
-    }
-    companion object {
-        private const val MOVIE_ID = "movie_id"
-        fun newInstance(movieId : Int) =
-            MovieDetailsFragment().also {
-                val args = bundleOf(MOVIE_ID to movieId)
-                it.arguments = args
-            }
     }
 }

@@ -9,6 +9,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.cinema.R
 import com.example.cinema.presentation.moviedetails.view.BackToListMovies
+import com.example.cinema.presentation.moviedetails.view.MovieDetailsFragment
+import com.example.cinema.presentation.moviedetails.view.MovieDetailsFragmentDirections
 import com.example.cinema.presentation.movies.view.ClickListener
 import com.example.cinema.presentation.movies.view.MoviesFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,8 +28,6 @@ class MainActivity : AppCompatActivity(), ClickListener,BackToListMovies {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment
         navController = navHostFragment.navController
-
-        // setupActionBarWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -37,10 +37,8 @@ class MainActivity : AppCompatActivity(), ClickListener,BackToListMovies {
     override fun onClickItem(movieId: Int,view: View) {
         view.findNavController().navigate(MoviesFragmentDirections.actionMoviesFragmentToMovieDetailsFragment(movieId))
     }
-    override fun clickBackButton() {
-        routeBack()
-    }
-    private fun routeBack() {
-        supportFragmentManager.popBackStack()
+    override fun clickBackButton(view: View) {
+        navController.popBackStack(R.id.movieDetailsFragment,true)
+        //navController.popBackStack()
     }
 }
