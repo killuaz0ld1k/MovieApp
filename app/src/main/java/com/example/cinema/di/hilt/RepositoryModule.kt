@@ -13,6 +13,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import javax.inject.Singleton
 
 @Module
@@ -36,4 +37,7 @@ class RepositoryModule {
     fun provideMovieRepository(remoteDataSource: RemoteDataSource,localDataSource: LocalDataSource) : MovieRepository {
         return MovieRepositoryImpl(remoteDataSource,localDataSource)
     }
+//    @Provides
+//    @Singleton
+//    fun provideGenres(remoteDataSource: RemoteDataSource) = runBlocking { remoteDataSource.loadGenres() }
 }

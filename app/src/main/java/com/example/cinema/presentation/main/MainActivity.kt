@@ -39,6 +39,5 @@ class MainActivity : AppCompatActivity(), ClickListener,BackToListMovies {
     }
     override fun clickBackButton(view: View) {
         navController.popBackStack(R.id.movieDetailsFragment,true)
-        //navController.popBackStack()
     }
 }

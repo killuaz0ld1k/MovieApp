@@ -21,8 +21,7 @@ class MoviesListViewModel @Inject constructor(private val repository: MovieRepos
     private val _state: MutableLiveData<Result<List<Movie>>> = MutableLiveData()
     val state: LiveData<Result<List<Movie>>> = _state
 
-    var recyclerViewScrollPositionRow: Int = 0
-    var recyclerViewScrollPositionColumn: Int = 0
+    private val loadedMovies: MutableList<Movie> = mutableListOf()
 
     var currentPage : Int = 1
     var isLoading = false
@@ -41,8 +40,9 @@ class MoviesListViewModel @Inject constructor(private val repository: MovieRepos
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     val response = repository.loadMovies(currentPage)
-                    _state.postValue(Result.Success(response))
-                    // currentPage++
+                    loadedMovies.addAll(response)
+                    _state.postValue(Result.Success(loadedMovies.toList()))
+                    currentPage++
                 } catch (e: Exception) {
                     _state.postValue(Result.Error(e.message))
                 }

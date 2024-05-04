@@ -18,7 +18,6 @@ class ImageUrlAppender(private val api: MoviesApi) {
 
     suspend fun getDetailImageUrl(backdropPath: String?): String? {
         loadConfiguration()
-
         return buildUrl(baseUrl, backdropSize, backdropPath)
     }
 

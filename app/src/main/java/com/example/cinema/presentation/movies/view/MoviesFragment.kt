@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.cinema.R
+import com.example.cinema.databinding.FragmentMoviesBinding
 import com.example.cinema.presentation.movies.adapter.MoviesAdapter
 import com.example.cinema.presentation.movies.viewModel.MoviesListViewModel
 import com.example.cinema.domain.util.Result
@@ -25,77 +26,73 @@ class MoviesFragment : Fragment() {
 
     private var listener : ClickListener? = null
     private val viewModel: MoviesListViewModel by viewModels()
-    private lateinit var layoutManagerGrid : GridLayoutManager
-    private lateinit var recycleMovies : RecyclerView
 
+    private lateinit var binding : FragmentMoviesBinding
+    private lateinit var moviesAdapter: MoviesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_movies, container, false)
+    ): View {
+        binding = FragmentMoviesBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-
         super.onViewCreated(view, savedInstanceState)
 
-        // val swipeRefresh : SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        recycleMovies = view.findViewById(R.id.recycler_movies)
+        val swipeRefresh : SwipeRefreshLayout = binding.swipeRefreshLayout
+        val recycleMovies : RecyclerView = binding.recyclerMovies
 
         recycleMovies.apply {
 
-            layoutManagerGrid = GridLayoutManager(this.context,2)
-            val adapter = MoviesAdapter {movieId ->
+            val layoutManagerGrid = GridLayoutManager(this.context,2)
+            moviesAdapter = MoviesAdapter {movieId ->
                 listener?.onClickItem(movieId,view)
             }
 
 
             this.layoutManager = layoutManagerGrid
-            this.adapter = adapter
+            this.adapter = moviesAdapter
 
-//            swipeRefresh.setOnRefreshListener {
-//                viewModel.currentPage = 1
-//                adapter.clearMovies()
-//                viewModel.loadMoviesFromRepository()
-//                swipeRefresh.isRefreshing = false
-//            }
+            swipeRefresh.setOnRefreshListener {
+                moviesAdapter.clearMovies()
+                viewModel.currentPage = 1
+                viewModel.loadMoviesFromRepository()
+                swipeRefresh.isRefreshing = false
+            }
 
             this.addOnScrollListener(object : PaginationScrollListener(layoutManagerGrid) {
 
                 override fun loadMoreItems()  {
-                    viewModel.currentPage += 1
-                    Log.d("MoviesListViewModel", "Current page before loading: $viewModel.currentPage")
                     viewModel.loadMoviesFromRepository()
                 }
                 override fun isLoading(): Boolean = viewModel.isLoading
             })
-            observeViewModel(adapter,view)
+            observeViewModel(moviesAdapter)
         }
 
     }
-    private fun observeViewModel(adapter: MoviesAdapter, view : View) {
+    private fun observeViewModel(adapter: MoviesAdapter) {
 
-//        val progressBar : ProgressBar = view.findViewById(R.id.progress_bar)
-//        val errorMessage : TextView = view.findViewById(R.id.error_message_textView)
+        val progressBar : ProgressBar = binding.progressCircular
+        val errorMessage : TextView = binding.exceptionTextView
 
         viewModel.state.observe(viewLifecycleOwner) {state ->
             when (state) {
                 is Result.Loading -> {
-//                    errorMessage.visibility = View.GONE
-//                    progressBar.visibility = View.VISIBLE
+                    errorMessage.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
                 }
                 is Result.Success -> {
-                    adapter.saveData(state.data.orEmpty())
-
-//                    progressBar.visibility = View.GONE
-//                    errorMessage.visibility = View.GONE
+                    adapter.submitList(state.data)
+                    progressBar.visibility = View.GONE
+                    errorMessage.visibility = View.GONE
                 }
                 is Result.Error -> {
-//                    progressBar.visibility = View.GONE
-//                    errorMessage.text = state.message
-//                    errorMessage.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                    errorMessage.text = state.message
+                    errorMessage.visibility = View.VISIBLE
                 }
             }
         }
@@ -112,19 +109,4 @@ class MoviesFragment : Fragment() {
         super.onDetach()
         listener = null
     }
-
-//    override fun onPause() {
-//        super.onPause()
-//        val firstVisibleItemPosition = layoutManagerGrid.findFirstVisibleItemPosition()
-//        val spanCount = layoutManagerGrid.spanCount
-//        viewModel.recyclerViewScrollPositionRow = firstVisibleItemPosition / spanCount
-//        viewModel.recyclerViewScrollPositionColumn = firstVisibleItemPosition % spanCount
-//    }
-//    override fun onResume() {
-//        super.onResume()
-//        val spanCount = layoutManagerGrid.spanCount
-//        val position = viewModel.recyclerViewScrollPositionRow * spanCount +
-//                viewModel.recyclerViewScrollPositionColumn
-//        layoutManagerGrid.scrollToPosition(position)
-//    }
 }

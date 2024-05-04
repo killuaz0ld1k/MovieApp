@@ -2,28 +2,20 @@ package com.example.cinema.presentation.movies.adapter
 
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.load
 import com.example.cinema.R
 import com.example.cinema.databinding.ItemMovieBinding
 import com.example.cinema.domain.model.Movie
 
-class MoviesAdapter(private val onClickItem : (movieId : Int) -> Unit) : Adapter<MoviesViewHolder>() {
-
-    private val diffUtil = MoviesDiffUtil()
-
-    private val asyncListDiffer = AsyncListDiffer(this, diffUtil)
+class MoviesAdapter(private val onClickItem : (movieId : Int) -> Unit) : ListAdapter<Movie,MoviesViewHolder>(MoviesDiffUtil()) {
 
     private lateinit var binding : ItemMovieBinding
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
         binding = ItemMovieBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return MoviesViewHolder(
@@ -31,22 +23,12 @@ class MoviesAdapter(private val onClickItem : (movieId : Int) -> Unit) : Adapter
         )
     }
 
-    override fun getItemCount(): Int {
-        return asyncListDiffer.currentList.size
-    }
-
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
-        val item = asyncListDiffer.currentList[position]
-        holder.bind(item,onClickItem)
+        holder.bind(getItem(position),onClickItem)
     }
 
-    fun saveData(movies : List<Movie>) {
-        val newList = asyncListDiffer.currentList.toMutableList()
-        newList.addAll(movies)
-        asyncListDiffer.submitList(newList)
-    }
     fun clearMovies() {
-        asyncListDiffer.submitList(emptyList<Movie>())
+        submitList(emptyList())
     }
 }
 

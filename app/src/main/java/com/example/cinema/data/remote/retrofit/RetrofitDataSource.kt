@@ -6,11 +6,15 @@ import com.example.cinema.domain.model.Genre
 import com.example.cinema.domain.model.Movie
 import com.example.cinema.domain.model.MovieDetails
 
-internal class RetrofitDataSource(private val moviesApi: MoviesApi, private val imageUrlAppender : ImageUrlAppender) : RemoteDataSource {
+internal class RetrofitDataSource(private val moviesApi: MoviesApi,
+                                  private val imageUrlAppender : ImageUrlAppender) : RemoteDataSource {
+    override suspend fun loadGenres(): List<Genre> {
+        return moviesApi.loadGenres().genres.map {
+            Genre(it.id,it.name)
+        }
+    }
 
     override suspend fun loadMovies(page : Int): List<Movie> {
-
-        val genres = moviesApi.loadGenres().genres
 
         return moviesApi.loadUpcoming(page).results.map { movieResponse ->
             Movie(
@@ -52,4 +56,5 @@ internal class RetrofitDataSource(private val moviesApi: MoviesApi, private val 
             }
         )
     }
+
 }
